@@ -13,7 +13,7 @@ export const compressImage = (base64Str: string, maxSizeKB: number, callback: (c
       canvas.height = img.height * scaleFactor;
   
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7); // Adjust quality as needed
+      const compressedBase64 = canvas.toDataURL('image/jpeg', 0.9); // Adjust quality as needed
   
       callback(compressedBase64);
     };
