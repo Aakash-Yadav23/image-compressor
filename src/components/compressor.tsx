@@ -5,13 +5,16 @@ import React, { useState } from 'react';
 import { saveAs } from 'file-saver';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { compressImage } from '../util/compressImage';
+import compressBase64Image from '../util/compressImage';
+import Loader from './Loader';
 
 const Compressor: React.FC = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [targetSize, setTargetSize] = useState<number>();
     const [base64Image, setBase64Image] = useState<string | null>(null);
     const [compressedBase64, setCompressedBase64] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [progress, setProgress] = useState<number>(0);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -36,9 +39,18 @@ const Compressor: React.FC = () => {
 
     const handleCompress = () => {
         if (base64Image && targetSize) {
-            compressImage(base64Image, targetSize, (compressedBase64) => {
-                setCompressedBase64(compressedBase64);
-            });
+            setLoading(true);
+            compressBase64Image(base64Image, targetSize, 500, (currentSizeKB) => {
+                setProgress(currentSizeKB);
+            })
+                .then((compressedBase64) => {
+                    setCompressedBase64(compressedBase64);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.error('Compression error:', error);
+                    setLoading(false);
+                });
         }
     };
 
@@ -69,6 +81,8 @@ const Compressor: React.FC = () => {
                 placeholder="Target size in KB"
             />
             <Button onClick={handleCompress}>Compress</Button>
+            {loading && <Loader />}
+            {loading && <div>Compressing... Current size: {progress.toFixed(2)} KB</div>}
             {compressedBase64 && (
                 <div>
                     <h2>Compressed Image:</h2>
