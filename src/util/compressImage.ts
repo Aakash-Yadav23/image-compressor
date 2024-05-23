@@ -62,10 +62,10 @@ const compressBase64Image = (
 
                             console.log(`Compressed image size: ${compressedSizeKB} KB`);
 
-                            if (compressedSizeKB <= targetSizeKB ) {
+                            if (compressedSizeKB <= targetSizeKB) {
                                 // If compressed size is within the target range, resolve with the compressed base64 string
                                 resolve(compressedBase64);
-                            } else if (quality > 0.4) {
+                            } else if (quality > 0.1) {
                                 // If size is not within the range, try again with reduced quality
                                 tryCompression(quality - 0.05);
                             } else {
