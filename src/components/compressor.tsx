@@ -40,7 +40,7 @@ const Compressor: React.FC = () => {
     const handleCompress = () => {
         if (base64Image && targetSize) {
             setLoading(true);
-            compressBase64Image(base64Image, targetSize, 500, (currentSizeKB) => {
+            compressBase64Image(base64Image, targetSize, (currentSizeKB) => {
                 setProgress(currentSizeKB);
             })
                 .then((compressedBase64) => {
